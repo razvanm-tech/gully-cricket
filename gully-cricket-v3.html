@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Gully Cricket</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  font-family: 'Baloo 2', cursive, sans-serif;
+  background: #1a0a03;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#app {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ===== SCREENS ===== */
+.screen {
+  display: none;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+.screen.active { display: flex; }
+
+/* ===========================
+   HOME SCREEN
+=========================== */
+#home {
+  background: linear-gradient(180deg, #FF8C42 0%, #E05A10 55%, #7A2208 100%);
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sun {
+  position: absolute; top:30px; right:40px;
+  width:68px; height:68px;
+  background: #F5C842; border-radius:50%;
+  box-shadow:0 0 50px rgba(245,200,66,0.9);
+  animation: pulseSun 3s ease-in-out infinite;
+}
+@keyframes pulseSun{0%,100%{box-shadow:0 0 50px rgba(245,200,66,0.8)}50%{box-shadow:0 0 90px #F5C842}}
+
+.clothesline {
+  position:absolute; top:70px; left:0; right:0;
+  height:2px; background:rgba(0,0,0,0.35);
+}
+.cloth {
+  position:absolute; top:0;
+  width:18px; height:26px; border-radius:2px;
+  animation:sway 2.2s ease-in-out infinite;
+}
+.cloth:nth-child(1){left:12%;background:#4FC3F7}
+.cloth:nth-child(2){left:28%;background:#F48FB1;animation-delay:.4s}
+.cloth:nth-child(3){left:52%;background:#A5D6A7;animation-delay:.8s}
+.cloth:nth-child(4){right:18%;background:#FFE082;animation-delay:1.2s}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+
+/* buildings silhouette */
+.buildings {
+  position:absolute; bottom:0; left:0; right:0; height:130px;
+  display:flex; align-items:flex-end;
+}
+.bldg {
+  background:rgba(0,0,0,0.25);
+  border-radius:3px 3px 0 0;
+}
+
+.home-inner {
+  position:relative; z-index:2;
+  text-align:center; width:100%;
+}
+
+.tape-ball {
+  width:68px; height:68px;
+  background: radial-gradient(circle at 38% 35%, #FF8FAA, #D43060);
+  border-radius:50%;
+  margin:0 auto 14px;
+  box-shadow:4px 4px 0 #901840, 0 10px 24px rgba(0,0,0,0.35);
+  animation:bounce 1.3s ease-in-out infinite;
+  position:relative;
+}
+.tape-ball::after{
+  content:''; position:absolute; inset:7px;
+  border-radius:50%;
+  border:2px dashed rgba(255,255,255,0.35);
+}
+@keyframes bounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.04)}}
+
+.gtitle {
+  font-size:54px; font-weight:800; color:#FFF8E7; line-height:1;
+  text-shadow:4px 4px 0 #7A2208, 7px 7px 16px rgba(0,0,0,0.5);
+  letter-spacing:-2px; margin-bottom:6px;
+}
+.gsubtitle {
+  color:#F5C842; font-size:12px; font-weight:700;
+  letter-spacing:2px; margin-bottom:22px;
+}
+
+.modes { display:flex; gap:8px; margin-bottom:18px; }
+.mdbtn {
+  flex:1; padding:11px 5px;
+  border:3px solid rgba(255,255,255,0.55);
+  background:transparent; color:white;
+  font-family:'Baloo 2',cursive; font-size:11px; font-weight:700;
+  border-radius:14px; cursor:pointer; transition:all 0.15s; line-height:1.3;
+}
+.mdbtn.on { background:rgba(255,255,255,0.92); color:#7A2208; border-color:white; }
+.mdbtn .big { font-size:22px; font-weight:800; display:block; }
+.mdbtn .sm { font-size:9px; opacity:0.85; display:block; margin-top:1px; }
+
+.playbtn {
+  width:100%; padding:17px;
+  background:#F5C842; color:#3D1A0A;
+  border:none; border-radius:16px;
+  font-family:'Baloo 2',cursive; font-size:21px; font-weight:800;
+  cursor:pointer;
+  box-shadow:0 6px 0 #B89020, 0 10px 28px rgba(0,0,0,0.35);
+  transition:all 0.1s; letter-spacing:1px;
+}
+.playbtn:active{transform:translateY(4px);box-shadow:0 2px 0 #B89020}
+
+.tagline {
+  margin-top:16px; font-size:12px;
+  color:rgba(255,255,255,0.68); line-height:1.6; font-style:italic;
+}
+
+/* ===========================
+   TUTORIAL
+=========================== */
+#tutorial {
+  background: linear-gradient(180deg,#87CEEB 0%,#A8D4A0 100%);
+  align-items:center; justify-content:center;
+  padding:28px 22px; gap:18px;
+}
+.tut-badge {
+  background:#D05010; color:white;
+  padding:5px 18px; border-radius:20px;
+  font-size:12px; font-weight:800; letter-spacing:2px;
+}
+.tut-h {
+  font-size:26px; font-weight:800; color:#2D0E04;
+  text-align:center; white-space:pre-line; line-height:1.3;
+}
+.tut-s {
+  font-size:14px; color:#2D0E04; text-align:center;
+  opacity:.75; font-weight:600; line-height:1.5;
+}
+.arrow-row { display:flex; gap:14px; }
+.arrow-box {
+  width:62px; height:62px;
+  border:3px solid #D05010; border-radius:14px;
+  background:rgba(255,255,255,0.5);
+  display:flex; align-items:center; justify-content:center;
+  font-size:28px; animation:pulseBox 1.5s ease-in-out infinite;
+}
+.arrow-box.mid{background:rgba(208,80,16,0.22);border-color:#D05010}
+@keyframes pulseBox{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+.tbar-demo {
+  width:100%; max-width:300px;
+  height:48px; background:rgba(0,0,0,0.15);
+  border-radius:24px; position:relative; overflow:hidden;
+}
+.tz-gd{position:absolute;inset:0;left:20%;right:20%;background:rgba(255,193,7,0.4);border-radius:24px}
+.tz-pf{position:absolute;inset:0;left:35%;right:35%;background:rgba(76,175,80,0.6);border-radius:24px}
+.tcursor{
+  position:absolute; top:6px; bottom:6px; width:10px;
+  background:white; border-radius:5px;
+  animation:slideCursor 2s ease-in-out infinite;
+  box-shadow:0 0 10px rgba(255,255,255,0.9);
+}
+@keyframes slideCursor{0%{left:5%}50%{left:82%}100%{left:5%}}
+.tbar-lbls{
+  display:flex; justify-content:space-between;
+  margin-top:6px; font-size:11px; font-weight:700;
+  color:#2D0E04; opacity:.7;
+}
+.tut-nxt {
+  width:100%; max-width:290px; padding:15px;
+  background:#D05010; color:white;
+  border:none; border-radius:14px;
+  font-family:'Baloo 2',cursive; font-size:18px; font-weight:800;
+  cursor:pointer; box-shadow:0 5px 0 #7A2208; transition:all 0.1s;
+}
+.tut-nxt:active{transform:translateY(3px);box-shadow:0 2px 0 #7A2208}
+
+/* ===========================
+   GAME SCREEN
+=========================== */
+#game { background:#87CEEB; flex-direction:column; }
+
+/* Scoreboard */
+.scoreboard {
+  background:#2D0E04; padding:10px 16px;
+  display:flex; justify-content:space-between; align-items:center;
+  flex-shrink:0; border-bottom:3px solid #F5C842;
+}
+.sc-blk { text-align:center; }
+.sc-big { font-size:36px; font-weight:800; color:#F5C842; line-height:1; }
+.sc-lbl { font-size:9px; color:rgba(255,255,255,0.45); letter-spacing:1px; font-weight:700; margin-top:1px; }
+
+.bdots { display:flex; gap:4px; justify-content:center; margin-bottom:3px; flex-wrap:wrap; max-width:120px; }
+.bdot {
+  width:12px; height:12px; border-radius:50%;
+  background:rgba(255,255,255,0.12);
+  border:2px solid rgba(255,255,255,0.25); transition:all 0.3s;
+}
+.bdot.done{background:#E8436A;border-color:#E8436A}
+.bdot.now{background:#F5C842;border-color:#F5C842;animation:pulseDot 0.8s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+
+.wkrow { display:flex; gap:3px; justify-content:center; margin-bottom:3px; }
+.wk {
+  width:5px; height:20px; background:#F0EAD6;
+  border-radius:2px; box-shadow:1px 1px 0 rgba(0,0,0,0.4); transition:all 0.3s;
+}
+.wk.gone{background:rgba(255,255,255,0.15);transform:rotate(22deg)}
+
+/* Pitch area */
+.pitch-area {
+  flex:1; position:relative; overflow:hidden;
+  min-height:220px;
+}
+
+/* Scene */
+.wall-l,.wall-r {
+  position:absolute; top:0; bottom:0; width:52px;
+  background: repeating-linear-gradient(0deg,#8B4513 0,#8B4513 15px,#7A3B0F 15px,#7A3B0F 17px);
+}
+.wall-l{left:0} .wall-r{right:0}
+
+/* Gully lane */
+.lane {
+  position:absolute; top:0; bottom:0; left:52px; right:52px;
+  background: linear-gradient(180deg,#C08840 0%,#D4A050 40%,#C89040 100%);
+}
+
+/* Pitch strip */
+.pstrip {
+  position:absolute; top:0; bottom:0; left:50%; width:54px;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,#D4C5A0,#C8B88A);
+  border-left:1px solid rgba(0,0,0,0.12); border-right:1px solid rgba(0,0,0,0.12);
+}
+
+/* Crease lines */
+.crease-far,.crease-near {
+  position:absolute; left:52px; right:52px; height:2px;
+  background:rgba(255,255,255,0.6);
+}
+.crease-far{top:28%} .crease-near{bottom:16%}
+
+/* Far stumps */
+.stump-far {
+  position:absolute; top:22%; left:50%; transform:translateX(-50%);
+  display:flex; gap:5px;
+}
+.sf {
+  width:4px; height:18px; background:#F0EAD6;
+  border-radius:1px; box-shadow:0 0 4px rgba(255,255,255,0.5);
+  position:relative;
+}
+.sf::before{
+  content:''; position:absolute; top:-3px; left:-2px; right:-2px;
+  height:3px; background:#F0EAD6; border-radius:1px;
+}
+
+/* Near stumps */
+.stump-near {
+  position:absolute; bottom:11%; left:50%; transform:translateX(-50%);
+  display:flex; gap:7px;
+}
+.sn{width:6px;height:28px;background:#F0EAD6;border-radius:2px;box-shadow:2px 2px 0 rgba(0,0,0,0.4)}
+
+/* Batter */
+.batter {
+  position:absolute; bottom:16%; left:50%;
+  transform:translateX(-20%);
+  display:flex; flex-direction:column; align-items:center;
+}
+.bh{width:20px;height:20px;background:#D4956A;border-radius:50%;border:2.5px solid #2D0E04;position:relative}
+.bhelmet{position:absolute;top:-5px;left:-3px;right:-3px;height:11px;background:#C05010;border-radius:10px 10px 0 0}
+.bb{width:24px;height:25px;background:white;border:2.5px solid #2D0E04;border-radius:3px;margin-top:1px;position:relative}
+.bat-stick{
+  position:absolute;right:-13px;top:2px;
+  width:7px;height:27px;background:#8B6914;
+  border:1px solid #6B4E10;border-radius:2px;
+  transform-origin:top center;transition:transform 0.2s ease;
+}
+.blegs{display:flex;gap:5px;margin-top:1px}
+.bleg{width:9px;height:13px;background:#E8E0D0;border:2px solid #2D0E04;border-radius:2px}
+
+/* Bowler */
+.bowler {
+  position:absolute; top:17%; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center;
+}
+.blh{width:14px;height:14px;background:#C4856A;border-radius:50%;border:2px solid #2D0E04}
+.blb{width:16px;height:18px;background:#1E6B30;border:2px solid #2D0E04;border-radius:3px;margin-top:1px}
+
+/* Fielders */
+.fielder {
+  position:absolute;
+  display:flex; flex-direction:column; align-items:center;
+  transition:all 0.45s ease;
+}
+.flh{width:12px;height:12px;background:#C4856A;border-radius:50%;border:2px solid #2D0E04}
+.flb{width:14px;height:16px;background:#1A4E8E;border:2px solid #2D0E04;border-radius:3px;margin-top:1px}
+
+/* Ball */
+#ball {
+  position:absolute; width:18px; height:18px;
+  background:radial-gradient(circle at 38% 35%,#FF8FAA,#D43060);
+  border-radius:50%;
+  box-shadow:2px 2px 4px rgba(0,0,0,0.45);
+  display:none; z-index:20;
+  left:50%; top:20%;
+  transform:translate(-50%,-50%);
+}
+
+/* Commentary */
+#cmt {
+  position:absolute; top:8px; left:10px; right:10px;
+  background:rgba(20,8,2,0.92); color:#F5C842;
+  padding:8px 14px; border-radius:10px;
+  font-size:14px; font-weight:700; text-align:center;
+  z-index:50; display:none;
+  border:2px solid rgba(245,200,66,0.3);
+  animation:slideD 0.3s ease;
+}
+@keyframes slideD{from{transform:translateY(-8px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* Run popup */
+.rpop {
+  position:absolute; font-size:24px; font-weight:800;
+  color:#F5C842; text-shadow:2px 2px 0 #2D0E04;
+  pointer-events:none; z-index:60;
+  animation:floatUp 1.2s ease forwards;
+}
+@keyframes floatUp{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-70px);opacity:0}}
+
+/* Flash overlays */
+.bflash{position:absolute;inset:0;background:rgba(245,200,66,0.4);z-index:45;pointer-events:none;animation:fadeOut 0.7s ease forwards}
+.outfl{position:absolute;inset:0;background:rgba(100,20,5,0.8);z-index:45;pointer-events:none;display:flex;align-items:center;justify-content:center;animation:fadeOut 1.3s ease forwards}
+.outword{font-size:64px;font-weight:800;color:white;text-shadow:4px 4px 0 #8B2E0F;animation:popIn 0.25s ease}
+@keyframes fadeOut{0%{opacity:1}100%{opacity:0}}
+@keyframes popIn{from{transform:scale(0.3)}to{transform:scale(1)}}
+
+/* Idle msg */
+#idlemsg{
+  position:absolute; bottom:8px; left:12px; right:12px;
+  background:rgba(20,8,2,0.88); color:#F5C842;
+  padding:7px 12px; border-radius:8px;
+  font-size:13px; font-weight:700; text-align:center;
+  z-index:55; display:none; font-style:italic;
+}
+
+/* Interruption */
+#interrupt{
+  position:absolute; inset:0;
+  background:rgba(20,8,2,0.94); z-index:100;
+  display:none; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:14px; padding:30px;
+}
+#interrupt.show{display:flex}
+.int-e{font-size:64px;animation:wiggle 0.55s ease-in-out infinite alternate}
+@keyframes wiggle{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+.int-t{font-size:20px;font-weight:800;color:white;text-align:center;line-height:1.4}
+.int-s{font-size:13px;color:rgba(255,255,255,0.6);text-align:center}
+.int-b{
+  margin-top:6px; padding:12px 28px;
+  background:#F5C842; color:#2D0E04;
+  border:none; border-radius:12px;
+  font-family:'Baloo 2',cursive; font-size:16px; font-weight:800; cursor:pointer;
+}
+
+/* ===========================
+   CONTROLS
+=========================== */
+.controls {
+  background:#2D0E04; padding:11px 13px 14px; flex-shrink:0;
+}
+
+.dtags{display:flex;gap:6px;justify-content:center;margin-bottom:9px}
+.dtag{
+  background:rgba(255,255,255,0.09); color:rgba(255,255,255,0.8);
+  padding:3px 10px; border-radius:8px; font-size:11px; font-weight:700; letter-spacing:.4px;
+}
+.dtag.hot{background:#D43060;color:white}
+
+/* Timing bar */
+.twrap{margin-bottom:9px;display:none}
+.tbar{
+  height:44px; background:rgba(255,255,255,0.07);
+  border:2px solid rgba(255,255,255,0.14); border-radius:22px;
+  position:relative; overflow:hidden;
+}
+.tzg{position:absolute;inset:0;left:20%;right:20%;background:rgba(255,193,7,0.24);border-radius:20px}
+.tzp{position:absolute;inset:0;left:35%;right:35%;background:rgba(76,175,80,0.45);border-radius:20px}
+.tmark{
+  position:absolute; top:4px; bottom:4px; width:12px;
+  background:white; border-radius:6px; left:5%;
+  box-shadow:0 0 14px rgba(255,255,255,0.9);
+}
+.tbarlbls{display:flex;justify-content:space-between;padding:0 4px;margin-top:4px}
+.tbl{font-size:10px;color:rgba(255,255,255,0.4);font-weight:700}
+.tbl.ok{color:#4CAF50}
+
+/* Direction buttons */
+.dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.dbtn{
+  padding:10px 4px;
+  background:rgba(255,255,255,0.07);
+  border:2px solid rgba(255,255,255,0.14);
+  border-radius:12px; color:white;
+  font-family:'Baloo 2',cursive; font-size:10px; font-weight:700;
+  cursor:pointer; text-align:center; transition:all 0.15s;
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+  -webkit-tap-highlight-color:transparent;
+}
+.dbtn .da{font-size:20px;line-height:1}
+.dbtn:active,.dbtn.picked{background:#D05010;border-color:#D05010}
+.dbtn.blocked{border-color:#D43060;background:rgba(212,48,96,0.1)}
+
+/* Bowl button */
+.bowlbtn{
+  display:none; width:100%; margin-top:9px; padding:14px;
+  background:#D43060; color:white;
+  border:none; border-radius:14px;
+  font-family:'Baloo 2',cursive; font-size:18px; font-weight:800;
+  cursor:pointer; box-shadow:0 5px 0 #901840; transition:all 0.1s; letter-spacing:1px;
+}
+.bowlbtn:active{transform:translateY(3px);box-shadow:0 2px 0 #901840}
+
+/* ===========================
+   RESULT
+=========================== */
+#result{
+  background:linear-gradient(145deg,#2D0E04 0%,#4A1A08 100%);
+  padding:22px 18px 32px; overflow-y:auto;
+  align-items:center;
+}
+.r-title{font-size:26px;font-weight:800;color:#F5C842;margin-bottom:5px;text-align:center}
+.r-score{font-size:82px;font-weight:800;color:white;line-height:1;text-shadow:4px 4px 0 #D05010;text-align:center}
+.r-lbl{font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:2px;margin-bottom:16px;text-align:center}
+
+.rstats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:100%;margin-bottom:13px}
+.rsbox{background:rgba(255,255,255,0.07);border-radius:12px;padding:11px 6px;text-align:center;border:1px solid rgba(255,255,255,0.1)}
+.rsv{font-size:26px;font-weight:800;color:#F5C842}
+.rsl{font-size:9px;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:.4px}
+
+.natbox{
+  width:100%; background:rgba(208,80,16,0.14);
+  border:2px solid #D05010; border-radius:13px;
+  padding:13px; margin-bottom:13px;
+  font-size:14px; color:#F0EAD6; font-weight:600;
+  line-height:1.6; text-align:center;
+}
+.natbox strong{color:#F5C842;font-size:17px}
+
+.lbbox{
+  width:100%; background:rgba(0,0,0,0.28);
+  border-radius:13px; padding:13px; margin-bottom:13px;
+}
+.lb-t{font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);letter-spacing:1px;margin-bottom:9px}
+.lb-row{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:13px}
+.lb-row:last-child{border:none}
+.lb-row.you{background:rgba(208,80,16,0.22);border-radius:8px;padding:6px 8px;border:none}
+.lb-rk{color:#F5C842;font-weight:800;width:20px}
+.lb-nm{color:white;font-weight:600;flex:1}
+.lb-sc{color:#D05010;font-weight:800}
+
+.wa-btn{
+  width:100%; padding:15px; background:#25D366; color:white;
+  border:none; border-radius:13px;
+  font-family:'Baloo 2',cursive; font-size:15px; font-weight:800;
+  cursor:pointer; margin-bottom:9px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.again-btn{
+  width:100%; padding:14px; background:#D05010; color:white;
+  border:none; border-radius:13px;
+  font-family:'Baloo 2',cursive; font-size:15px; font-weight:800;
+  cursor:pointer; box-shadow:0 4px 0 #7A2208;
+}
+
+/* Sound toggle */
+.sound-toggle{
+  position:absolute; top:12px; right:14px;
+  background:rgba(0,0,0,0.3); border:none; border-radius:50%;
+  width:36px; height:36px; font-size:18px;
+  cursor:pointer; z-index:200;
+  display:flex; align-items:center; justify-content:center;
+  color:white;
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ============ HOME ============ -->
+<div id="home" class="screen active">
+  <button class="sound-toggle" id="snd-toggle" onclick="toggleSound()">🔊</button>
+  <div class="sun"></div>
+  <div class="clothesline">
+    <div class="cloth"></div><div class="cloth"></div>
+    <div class="cloth"></div><div class="cloth"></div>
+  </div>
+  <div class="buildings" id="bldgs"></div>
+
+  <div class="home-inner">
+    <div class="tape-ball"></div>
+    <div class="gtitle">GULLY<br>CRICKET</div>
+    <div class="gsubtitle">NO ADS · NO NONSENSE · ₹99</div>
+
+    <div class="modes">
+      <button class="mdbtn on" data-b="6" data-w="1" onclick="pickMode(this)">
+        <span class="big">6</span>BALLS<span class="sm">Quick Single</span>
+      </button>
+      <button class="mdbtn" data-b="12" data-w="2" onclick="pickMode(this)">
+        <span class="big">12</span>BALLS<span class="sm">Gully Match</span>
+      </button>
+      <button class="mdbtn" data-b="18" data-w="3" onclick="pickMode(this)">
+        <span class="big">18</span>BALLS<span class="sm">Full Gully</span>
+      </button>
+    </div>
+
+    <button class="playbtn" onclick="goTutorial()">🏏 PLAY NOW</button>
+    <p class="tagline">"No stadiums. No fantasy teams. Just a tape ball,<br>a narrow lane, and cricket the way it actually felt."</p>
+  </div>
+</div>
+
+<!-- ============ TUTORIAL ============ -->
+<div id="tutorial" class="screen">
+  <div class="tut-badge">HOW TO PLAY</div>
+  <div class="tut-h" id="tut-h">Watch the field.\nPick your gap.</div>
+  <div class="tut-s" id="tut-s">Fielders block certain zones. Find the open direction.</div>
+  <div id="tut-arrows" class="arrow-row">
+    <div class="arrow-box">↙</div>
+    <div class="arrow-box mid">↑</div>
+    <div class="arrow-box">↗</div>
+  </div>
+  <div id="tut-timing" style="display:none;width:100%;max-width:300px">
+    <div class="tbar-demo">
+      <div class="tz-gd"></div><div class="tz-pf"></div>
+      <div class="tcursor"></div>
+    </div>
+    <div class="tbar-lbls">
+      <span>TOO EARLY</span>
+      <span style="color:#2E7D32;font-weight:800">✦ PERFECT ✦</span>
+      <span>TOO LATE</span>
+    </div>
+  </div>
+  <button class="tut-nxt" id="tut-btn" onclick="tutNext()">Next →</button>
+</div>
+
+<!-- ============ GAME ============ -->
+<div id="game" class="screen">
+
+  <div class="scoreboard">
+    <div class="sc-blk">
+      <div class="sc-big" id="sc-runs">0</div>
+      <div class="sc-lbl">RUNS</div>
+    </div>
+    <div class="sc-blk">
+      <div class="bdots" id="bdots"></div>
+      <div class="sc-lbl">BALLS</div>
+    </div>
+    <div class="sc-blk">
+      <div class="wkrow" id="wkrow"></div>
+      <div class="sc-lbl">WICKETS</div>
+    </div>
+  </div>
+
+  <div class="pitch-area" id="pitch-area">
+    <div class="wall-l"></div>
+    <div class="wall-r"></div>
+    <div class="lane"></div>
+    <div class="pstrip"></div>
+    <div class="crease-far"></div>
+    <div class="crease-near"></div>
+
+    <div class="stump-far">
+      <div class="sf"></div><div class="sf"></div><div class="sf"></div>
+    </div>
+    <div class="stump-near">
+      <div class="sn"></div><div class="sn"></div><div class="sn"></div>
+    </div>
+
+    <div class="batter">
+      <div class="bh"><div class="bhelmet"></div></div>
+      <div class="bb"><div class="bat-stick" id="bat-stick"></div></div>
+      <div class="blegs"><div class="bleg"></div><div class="bleg"></div></div>
+    </div>
+
+    <div class="bowler">
+      <div class="blh"></div><div class="blb"></div>
+    </div>
+
+    <div class="fielder" id="f0" style="display:none"><div class="flh"></div><div class="flb"></div></div>
+    <div class="fielder" id="f1" style="display:none"><div class="flh"></div><div class="flb"></div></div>
+    <div class="fielder" id="f2" style="display:none"><div class="flh"></div><div class="flb"></div></div>
+
+    <div id="ball"></div>
+    <div id="cmt"></div>
+    <div id="idlemsg"></div>
+
+    <div id="interrupt">
+      <div class="int-e" id="int-e">👩</div>
+      <div class="int-t" id="int-t">Aye Rohit! Andar aao!</div>
+      <div class="int-s" id="int-s">Mum is calling...</div>
+      <button class="int-b" id="int-b" onclick="resumePlay()">Abhi nahi maa! 🙏</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="dtags">
+      <span class="dtag" id="d-line">OFF SIDE</span>
+      <span class="dtag" id="d-len">GOOD LENGTH</span>
+      <span class="dtag hot" id="d-spd">MEDIUM</span>
+    </div>
+
+    <div class="twrap" id="twrap">
+      <div class="tbar">
+        <div class="tzg"></div><div class="tzp"></div>
+        <div class="tmark" id="tmark"></div>
+      </div>
+      <div class="tbarlbls">
+        <span class="tbl">TOO EARLY</span>
+        <span class="tbl ok">✦ PERFECT ✦</span>
+        <span class="tbl">TOO LATE</span>
+      </div>
+    </div>
+
+    <div class="dgrid" id="dgrid">
+      <button class="dbtn" data-d="fine-leg" onclick="pickDir(this)"><span class="da">↙</span>Fine Leg</button>
+      <button class="dbtn" data-d="straight" onclick="pickDir(this)"><span class="da">↑</span>Straight</button>
+      <button class="dbtn" data-d="third-man" onclick="pickDir(this)"><span class="da">↘</span>Third Man</button>
+      <button class="dbtn" data-d="mid-wicket" onclick="pickDir(this)"><span class="da">←</span>Mid Wicket</button>
+      <button class="dbtn" data-d="mid-on" onclick="pickDir(this)"><span class="da">↖</span>Mid On</button>
+      <button class="dbtn" data-d="cover" onclick="pickDir(this)"><span class="da">→</span>Cover</button>
+    </div>
+
+    <button class="bowlbtn" id="bowlbtn" onclick="playShot()">🏏 PLAY SHOT</button>
+  </div>
+</div>
+
+<!-- ============ RESULT ============ -->
+<div id="result" class="screen">
+  <div class="r-title" id="r-title">🏏 INNINGS OVER!</div>
+  <div class="r-score" id="r-score">0</div>
+  <div class="r-lbl">GULLY SCORE</div>
+  <div class="rstats">
+    <div class="rsbox"><div class="rsv" id="r-runs">0</div><div class="rsl">RUNS</div></div>
+    <div class="rsbox"><div class="rsv" id="r-4s">0</div><div class="rsl">FOURS</div></div>
+    <div class="rsbox"><div class="rsv" id="r-6s">0</div><div class="rsl">SIXES</div></div>
+  </div>
+  <div class="natbox">
+    National record: <strong id="r-nat">84</strong> &nbsp;|&nbsp; Your score: <strong id="r-you">0</strong><br>
+    <span id="r-cmp" style="color:#F5C842">Keep going yaar!</span>
+  </div>
+  <div class="lbbox">
+    <div class="lb-t">🏆 THIS WEEK — YOUR CITY</div>
+    <div id="lblist"></div>
+  </div>
+  <button class="wa-btn" onclick="shareWA()">📲 Share on WhatsApp</button>
+  <button class="again-btn" onclick="goHome()">🏏 Play Again</button>
+</div>
+
+</div><!-- #app -->
+
+<script>
+/* ============================================================
+   AUDIO ENGINE — Web Audio API, no external files needed
+   All sounds are synthesised procedurally
+============================================================ */
+let audioCtx = null;
+let soundOn = true;
+
+function getACtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function toggleSound() {
+  soundOn = !soundOn;
+  document.getElementById('snd-toggle').textContent = soundOn ? '🔊' : '🔇';
+}
+
+// Synthesised cricket bat hit
+function playHit(power) { // power 0-1
+  if (!soundOn) return;
+  const ac = getACtx();
+  const now = ac.currentTime;
+
+  // Thwack transient
+  const buf = ac.createBuffer(1, ac.sampleRate * 0.25, ac.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < data.length; i++) {
+    const t = i / ac.sampleRate;
+    data[i] = (Math.random() * 2 - 1) * Math.exp(-t * 30) * 0.8
+             + Math.sin(2 * Math.PI * 180 * t) * Math.exp(-t * 20) * power;
+  }
+  const src = ac.createBufferSource();
+  src.buffer = buf;
+  const gain = ac.createGain();
+  gain.gain.setValueAtTime(0.7 + power * 0.3, now);
+  src.connect(gain);
+  gain.connect(ac.destination);
+  src.start(now);
+}
+
+// Miss / bowled
+function playMiss() {
+  if (!soundOn) return;
+  const ac = getACtx();
+  const now = ac.currentTime;
+  // Stump rattle — wooden clatter
+  [220, 330, 180].forEach((f, i) => {
+    const osc = ac.createOscillator();
+    const g = ac.createGain();
+    osc.frequency.value = f;
+    osc.type = 'sawtooth';
+    g.gain.setValueAtTime(0.3, now + i * 0.04);
+    g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.04 + 0.3);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(now + i * 0.04);
+    osc.stop(now + i * 0.04 + 0.3);
+  });
+}
+
+// Boundary cheer — rising crowd
+function playCrowd(isSix) {
+  if (!soundOn) return;
+  const ac = getACtx();
+  const now = ac.currentTime;
+  const buf = ac.createBuffer(1, ac.sampleRate * 1.2, ac.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < data.length; i++) {
+    const t = i / ac.sampleRate;
+    const env = Math.min(t * 4, 1) * Math.exp(-t * (isSix ? 0.8 : 1.5));
+    data[i] = (Math.random() * 2 - 1) * env * 0.4;
+  }
+  const src = ac.createBufferSource();
+  src.buffer = buf;
+  // Highpass to make crowd feel further away
+  const filter = ac.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.value = isSix ? 1200 : 800;
+  filter.Q.value = 0.5;
+  const gain = ac.createGain();
+  gain.gain.value = 0.6;
+  src.connect(filter); filter.connect(gain); gain.connect(ac.destination);
+  src.start(now);
+}
+
+// Street ambient — faint background
+let ambientNode = null;
+function startAmbient() {
+  if (!soundOn) return;
+  if (ambientNode) return;
+  const ac = getACtx();
+  const buf = ac.createBuffer(1, ac.sampleRate * 4, ac.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < data.length; i++) {
+    data[i] = (Math.random() * 2 - 1) * 0.04;
+  }
+  ambientNode = ac.createBufferSource();
+  ambientNode.buffer = buf;
+  ambientNode.loop = true;
+  const filter = ac.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 400;
+  const gain = ac.createGain();
+  gain.gain.value = 0.18;
+  ambientNode.connect(filter); filter.connect(gain); gain.connect(ac.destination);
+  ambientNode.start();
+}
+
+function stopAmbient() {
+  if (ambientNode) { try { ambientNode.stop(); } catch(e){} ambientNode = null; }
+}
+
+// UI click blip
+function playClick() {
+  if (!soundOn) return;
+  const ac = getACtx();
+  const osc = ac.createOscillator();
+  const g = ac.createGain();
+  osc.frequency.value = 800;
+  osc.type = 'sine';
+  g.gain.setValueAtTime(0.12, ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.08);
+  osc.connect(g); g.connect(ac.destination);
+  osc.start(); osc.stop(ac.currentTime + 0.08);
+}
+
+// Mum voice — synthesised "calling" tone pattern
+function playMumCall() {
+  if (!soundOn) return;
+  const ac = getACtx();
+  const now = ac.currentTime;
+  // Rising-falling melodic pattern like "calling" voice
+  [[400,0],[500,0.15],[380,0.3],[460,0.45],[340,0.6]].forEach(([f,t]) => {
+    const osc = ac.createOscillator();
+    const g = ac.createGain();
+    osc.frequency.value = f;
+    osc.type = 'sine';
+    g.gain.setValueAtTime(0, now + t);
+    g.gain.linearRampToValueAtTime(0.18, now + t + 0.05);
+    g.gain.exponentialRampToValueAtTime(0.001, now + t + 0.14);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(now + t); osc.stop(now + t + 0.15);
+  });
+}
+
+// Watchman whistle
+function playWhistle() {
+  if (!soundOn) return;
+  const ac = getACtx();
+  const now = ac.currentTime;
+  [0, 0.35, 0.55].forEach(t => {
+    const osc = ac.createOscillator();
+    const g = ac.createGain();
+    osc.frequency.setValueAtTime(1800, now + t);
+    osc.frequency.linearRampToValueAtTime(2200, now + t + 0.25);
+    osc.type = 'sine';
+    g.gain.setValueAtTime(0.25, now + t);
+    g.gain.exponentialRampToValueAtTime(0.001, now + t + 0.28);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(now + t); osc.stop(now + t + 0.3);
+  });
+}
+
+// Glass break
+function playGlass() {
+  if (!soundOn) return;
+  const ac = getACtx();
+  const now = ac.currentTime;
+  const buf = ac.createBuffer(1, ac.sampleRate * 0.4, ac.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) {
+    const t = i / ac.sampleRate;
+    d[i] = (Math.random() * 2 - 1) * Math.exp(-t * 15) * 0.6;
+  }
+  const src = ac.createBufferSource();
+  src.buffer = buf;
+  const filter = ac.createBiquadFilter();
+  filter.type = 'highpass';
+  filter.frequency.value = 3000;
+  const g = ac.createGain();
+  g.gain.value = 0.5;
+  src.connect(filter); filter.connect(g); g.connect(ac.destination);
+  src.start(now);
+}
+
+/* ============================================================
+   GAME DATA
+============================================================ */
+const NAMES = ['Rahul','Arjun','Rohit','Vikram','Priya','Ananya','Suresh','Deepak','Ravi','Pooja'];
+const DIRS = ['fine-leg','straight','third-man','mid-wicket','mid-on','cover'];
+const DIR_POS = {
+  'fine-leg':   {l:'20%',t:'62%'},
+  'straight':   {l:'47%',t:'28%'},
+  'third-man':  {l:'70%',t:'60%'},
+  'mid-wicket': {l:'16%',t:'46%'},
+  'mid-on':     {l:'33%',t:'34%'},
+  'cover':      {l:'72%',t:'40%'}
+};
+const DIR_ARROWS = {'fine-leg':'↙','straight':'↑','third-man':'↘','mid-wicket':'←','mid-on':'↖','cover':'→'};
+const DIR_LABELS = {'fine-leg':'Fine Leg','straight':'Straight','third-man':'Third Man','mid-wicket':'Mid Wicket','mid-on':'Mid On','cover':'Cover'};
+const NAT_RECORDS = {6:84, 12:142, 18:198};
+const FAKE_LB = [['Priya S.',89],['Rahul K.',76],['Ananya M.',71],['Deepak R.',65],['Suresh P.',58]];
+
+const CMT = {
+  p6:  ['CHHAKKA! 🔥','It\'s gone! Maximum!','Over the wall! Six!','Boom! Chhakka!','Woh toh gaya! SIX!'],
+  p4:  ['Shot of the day!','Chaar! Beautiful!','What a drive yaar!','FOUR! Kya shot hai!','Clean as a whistle — FOUR!'],
+  gd:  ['Nice placement!','Good running yaar','Safe but smart','Smart cricket!','Well played!'],
+  er:  ['Oof, inside edge...','Too early on that!','Adjust kar yaar!','Lucky there!','Edged and safe!'],
+  lt:  ['Outside edge! Risky!','A bit late on that','Phir se karo!','Nearly caught!','Just safe...'],
+  ob:  ['BOWLED! Stumps flying!','Clean bowled!','Middle stump gone!','Bowled him out!'],
+  oc:  ['CAUGHT! Walk!','He\'s taken it! OUT!','Caught behind! OUT!','Caught! Out of here!'],
+  f1:  ['Pehli ball pe out? Oh no...','Duck! First ball wicket!','Ohhh — first baller!'],
+  cb:  ['Back to back boundaries!','On fire today!','Can\'t stop him!','Tremendous hitting yaar!']
+};
+
+/* ============================================================
+   GAME STATE
+============================================================ */
+let G = {};
+let tutStep = 0, tutDone = false;
+let timingRAF = null, timingV = 0, timingDir = 1;
+let idleTimer = null;
+let intUsed = false, winUsed = false, isInterrupted = false;
+let selDir = null, fieldedDirs = [], phase = 'dir';
+
+/* ============================================================
+   UTILS
+============================================================ */
+function $(id){ return document.getElementById(id); }
+function rnd(n){ return Math.floor(Math.random()*n); }
+function pick(arr){ return arr[rnd(arr.length)]; }
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+
+/* ============================================================
+   HOME
+============================================================ */
+// Draw some building silhouettes
+(function buildScene(){
+  const configs = [{w:70,h:120,l:0},{w:55,h:90,l:65},{w:80,h:140,r:0},{w:50,h:100,r:70}];
+  const c = $('bldgs');
+  configs.forEach(cfg => {
+    const d = document.createElement('div');
+    d.className = 'bldg';
+    d.style.width = cfg.w+'px';
+    d.style.height = cfg.h+'px';
+    if (cfg.l !== undefined) d.style.left = cfg.l+'px';
+    if (cfg.r !== undefined) d.style.right = cfg.r+'px';
+    c.appendChild(d);
+  });
+})();
+
+function pickMode(btn){
+  playClick();
+  document.querySelectorAll('.mdbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function getMode(){
+  const btn = document.querySelector('.mdbtn.on');
+  return { balls: parseInt(btn.dataset.b), wickets: parseInt(btn.dataset.w) };
+}
+
+function goHome(){
+  stopAmbient();
+  showScreen('home');
+}
+
+/* ============================================================
+   TUTORIAL
+============================================================ */
+const TUTS = [
+  { h:'Watch the field.\nPick your gap.', s:'Fielders block certain zones. Find an open direction and tap it.', arrows:true, timing:false, btn:'Next →' },
+  { h:'Hit at the\nright moment.', s:'Green zone = perfect timing = maximum power and runs.', arrows:false, timing:true, btn:'Got it! →' },
+  { h:'Direction + Timing\n= Your shot.', s:'First pick where to hit. Then tap PLAY SHOT at the right moment.', arrows:false, timing:false, btn:"Let\'s Play! 🏏" }
+];
+
+function goTutorial(){
+  playClick();
+  if (tutDone){ startGame(); return; }
+  tutStep = 0; renderTut(); showScreen('tutorial');
+}
+
+function renderTut(){
+  const t = TUTS[tutStep];
+  $('tut-h').textContent = t.h;
+  $('tut-s').textContent = t.s;
+  $('tut-btn').textContent = t.btn;
+  $('tut-arrows').style.display = t.arrows ? 'flex' : 'none';
+  $('tut-timing').style.display = t.timing ? 'block' : 'none';
+}
+
+function tutNext(){
+  playClick();
+  tutStep++;
+  if (tutStep >= TUTS.length){ tutDone = true; startGame(); }
+  else renderTut();
+}
+
+/* ============================================================
+   GAME START
+============================================================ */
+function startGame(){
+  const mode = getMode();
+  G = {
+    runs:0, balls:0,
+    maxBalls: mode.balls, wickets: mode.wickets, wicketsLeft: mode.wickets,
+    fours:0, sixes:0, gullyScore:0,
+    name: pick(NAMES), combo:0
+  };
+  intUsed = false; winUsed = false; isInterrupted = false;
+  $('interrupt').classList.remove('show');
+  showScreen('game');
+  updateSC();
+  newDelivery();
+  startAmbient();
+  resetIdle();
+}
+
+/* ============================================================
+   SCOREBOARD
+============================================================ */
+function updateSC(){
+  $('sc-runs').textContent = G.runs;
+
+  const bd = $('bdots'); bd.innerHTML = '';
+  for (let i = 0; i < G.maxBalls; i++){
+    const d = document.createElement('div');
+    d.className = 'bdot';
+    if (i < G.balls) d.classList.add('done');
+    else if (i === G.balls) d.classList.add('now');
+    bd.appendChild(d);
+  }
+
+  const wr = $('wkrow'); wr.innerHTML = '';
+  for (let i = 0; i < G.wickets; i++){
+    const w = document.createElement('div');
+    w.className = 'wk';
+    if (i >= G.wicketsLeft) w.classList.add('gone');
+    wr.appendChild(w);
+  }
+}
+
+/* ============================================================
+   DELIVERY SETUP
+============================================================ */
+function newDelivery(){
+  selDir = null; phase = 'dir';
+  const lines = ['OFF SIDE','MIDDLE','LEG SIDE'];
+  const lengths = ['SHORT','GOOD LENGTH','FULL'];
+  const speeds = ['FAST','MEDIUM','SPIN'];
+  $('d-line').textContent = pick(lines);
+  $('d-len').textContent = pick(lengths);
+  $('d-spd').textContent = pick(speeds);
+
+  const n = 2 + rnd(2);
+  fieldedDirs = [...DIRS].sort(()=>Math.random()-0.5).slice(0,n);
+  placeFielders();
+  renderDirBtns();
+
+  $('dgrid').style.display = 'grid';
+  $('twrap').style.display = 'none';
+  $('bowlbtn').style.display = 'none';
+  resetIdle();
+}
+
+function placeFielders(){
+  for(let i=0;i<3;i++) $('f'+i).style.display='none';
+  fieldedDirs.forEach((d,i)=>{
+    const f = $('f'+i);
+    const p = DIR_POS[d];
+    f.style.display = 'flex';
+    f.style.left = p.l; f.style.top = p.t;
+    f.style.transform = 'translate(-50%,-50%)';
+  });
+}
+
+function renderDirBtns(){
+  document.querySelectorAll('.dbtn').forEach(btn=>{
+    const d = btn.dataset.d;
+    btn.classList.remove('picked','blocked');
+    if (fieldedDirs.includes(d)){
+      btn.classList.add('blocked');
+      btn.innerHTML = `<span class="da">${DIR_ARROWS[d]} 🧤</span>${DIR_LABELS[d]}`;
+    } else {
+      btn.innerHTML = `<span class="da">${DIR_ARROWS[d]}</span>${DIR_LABELS[d]}`;
+    }
+  });
+}
+
+/* ============================================================
+   DIRECTION SELECT
+============================================================ */
+function pickDir(btn){
+  if (phase !== 'dir' || isInterrupted) return;
+  playClick();
+  document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('picked'));
+  btn.classList.add('picked');
+  selDir = btn.dataset.d;
+  phase = 'timing';
+  $('twrap').style.display = 'block';
+  $('bowlbtn').style.display = 'block';
+  startTiming();
+  resetIdle();
+}
+
+/* ============================================================
+   TIMING BAR
+============================================================ */
+function startTiming(){
+  stopTiming();
+  timingV = 0; timingDir = 1;
+  const spd = 0.015 + Math.random() * 0.013;
+  function tick(){
+    timingV += timingDir * spd;
+    if (timingV >= 1){ timingV = 1; timingDir = -1; }
+    if (timingV <= 0){ timingV = 0; timingDir = 1; }
+    const m = $('tmark');
+    if (m) m.style.left = (timingV * 86 + 1) + '%';
+    timingRAF = requestAnimationFrame(tick);
+  }
+  timingRAF = requestAnimationFrame(tick);
+}
+
+function stopTiming(){
+  if (timingRAF){ cancelAnimationFrame(timingRAF); timingRAF = null; }
+}
+
+/* ============================================================
+   PLAY SHOT
+============================================================ */
+function playShot(){
+  if (phase !== 'timing' || isInterrupted) return;
+  stopTiming();
+
+  const tv = timingV;
+  let timing, mult;
+  if (tv >= 0.35 && tv <= 0.65)                            { timing='perfect'; mult=1.0; }
+  else if ((tv>=0.20&&tv<0.35)||(tv>0.65&&tv<=0.80))       { timing='good';    mult=0.65; }
+  else if (tv < 0.20)                                       { timing='early';   mult=0.25; }
+  else                                                      { timing='late';    mult=0.25; }
+
+  const intoFielder = fieldedDirs.includes(selDir);
+  const isOut = resolveOut(timing, intoFielder);
+  G.balls++;
+
+  if (isOut) doOut(timing);
+  else doShot(timing, mult, intoFielder);
+
+  // Interruption triggers
+  if (!isOut && !winUsed && timing === 'perfect'
+      && (selDir==='cover'||selDir==='third-man') && Math.random()<0.28){
+    winUsed = true;
+    setTimeout(()=> { playGlass(); doInterrupt('watch'); }, 1600);
+  } else if (!intUsed && G.balls === Math.floor(G.maxBalls/2) && Math.random()<0.65){
+    intUsed = true;
+    setTimeout(()=> { playMumCall(); doInterrupt('dad'); }, 1400);
+  }
+
+  setTimeout(()=>{
+    if (G.balls >= G.maxBalls || G.wicketsLeft <= 0) endGame();
+    else newDelivery();
+  }, isOut ? 1900 : 1500);
+}
+
+function resolveOut(timing, intoFielder){
+  if (timing === 'perfect') return false;
+  if ((timing==='early'||timing==='late') && Math.random()<0.28) return true;
+  if (timing==='good' && intoFielder && Math.random()<0.55) return true;
+  return false;
+}
+
+/* ============================================================
+   OUT
+============================================================ */
+function doOut(timing){
+  G.wicketsLeft--; G.combo = 0;
+  updateSC();
+  playMiss();
+
+  const pa = $('pitch-area');
+  const el = document.createElement('div');
+  el.className = 'outfl';
+  el.innerHTML = '<div class="outword">OUT!</div>';
+  pa.appendChild(el);
+  setTimeout(()=>el.remove(), 1300);
+
+  if (G.balls === 1){
+    showCmt(pick(CMT.f1));
+    setTimeout(()=>{ playMumCall(); doInterrupt('mum'); }, 1200);
+  } else {
+    showCmt(pick(timing==='early' ? CMT.ob : CMT.oc));
+  }
+  swingBat('miss');
+}
+
+/* ============================================================
+   SHOT
+============================================================ */
+function doShot(timing, mult, intoFielder){
+  const baseByDir = {'straight':4,'cover':4,'mid-on':3,'mid-wicket':3,'fine-leg':2,'third-man':2};
+  let base = baseByDir[selDir] || 2;
+  let runs;
+
+  if (timing==='perfect' && base>=4){
+    runs = Math.random()<0.35 ? 6 : 4;
+  } else {
+    runs = Math.round(base * mult);
+    if (intoFielder && timing!=='perfect') runs = Math.min(runs,1);
+    if (timing==='early'||timing==='late') runs = Math.max(0,Math.min(runs,2));
+    if (timing==='good' && runs>=4 && Math.random()<0.35) runs = 4;
+  }
+
+  G.runs += runs;
+  if (runs===4){ G.fours++; G.combo++; }
+  else if (runs===6){ G.sixes++; G.combo++; }
+  else G.combo = 0;
+
+  updateSC();
+  showRunPop(runs);
+  swingBat('hit', runs>=4);
+
+  // Sound
+  if (runs>=6){ playHit(1); setTimeout(()=>playCrowd(true),200); }
+  else if (runs>=4){ playHit(0.85); setTimeout(()=>playCrowd(false),150); }
+  else if (runs>0){ playHit(0.4+mult*0.4); }
+  else { playHit(0.15); }
+
+  if (runs>=4) showFlash();
+
+  // Commentary
+  if (G.combo>=2) setTimeout(()=>showCmt(pick(CMT.cb)),700);
+  else if (timing==='perfect'&&runs===6) showCmt(pick(CMT.p6));
+  else if (timing==='perfect'&&runs===4) showCmt(pick(CMT.p4));
+  else if (timing==='good') showCmt(pick(CMT.gd));
+  else if (timing==='early') showCmt(pick(CMT.er));
+  else showCmt(pick(CMT.lt));
+}
+
+/* ============================================================
+   ANIMATIONS & VFX
+============================================================ */
+function swingBat(type, big){
+  const bat = $('bat-stick');
+  if (!bat) return;
+  bat.style.transform = type==='hit' ? (big?'rotate(-135deg)':'rotate(-80deg)') : 'rotate(22deg)';
+  setTimeout(()=>{ bat.style.transform='rotate(0deg)'; }, 300);
+}
+
+function showRunPop(runs){
+  const pa = $('pitch-area');
+  const el = document.createElement('div');
+  el.className = 'rpop';
+  el.textContent = runs===0?'• Dot':runs===4?'4️⃣ FOUR!':runs===6?'6️⃣ SIX!':`+${runs}`;
+  el.style.left = (20+Math.random()*60)+'%';
+  el.style.bottom = '30%';
+  pa.appendChild(el);
+  setTimeout(()=>el.remove(), 1200);
+}
+
+function showFlash(){
+  const pa = $('pitch-area');
+  const el = document.createElement('div');
+  el.className = 'bflash';
+  pa.appendChild(el);
+  setTimeout(()=>el.remove(), 700);
+}
+
+function showCmt(txt){
+  const el = $('cmt');
+  el.textContent = txt;
+  el.style.display = 'block';
+  setTimeout(()=>{ el.style.display='none'; }, 2600);
+}
+
+/* ============================================================
+   INTERRUPTIONS
+============================================================ */
+function doInterrupt(type){
+  if (isInterrupted) return;
+  isInterrupted = true;
+  stopTiming(); clearIdle();
+
+  const DATA = {
+    mum:   {e:'👩', t:`Aye ${G.name}! Andar aao, khana lag gaya!`,   s:'Mum calling from upstairs...',     b:'Abhi nahi maa! 🙏'},
+    dad:   {e:'👨', t:`${G.name}! Cycle leke market ja, doodh leke aa!`, s:"Dad's got chores lined up...", b:'Haan papa, bas ek over! 🙏'},
+    watch: {e:'👮', t:'Aye chokre! Kaun tod gaya khidki?! BHAAGO!',  s:'Watchman spotted the window!',     b:'BHAAGO! 😱'}
+  };
+  const d = DATA[type];
+  $('int-e').textContent = d.e;
+  $('int-t').textContent = d.t;
+  $('int-s').textContent = d.s;
+  $('int-b').textContent = d.b;
+  $('interrupt').classList.add('show');
+}
+
+function resumePlay(){
+  playClick();
+  isInterrupted = false;
+  $('interrupt').classList.remove('show');
+  if (G.balls>=G.maxBalls||G.wicketsLeft<=0){ endGame(); return; }
+  if (phase==='timing'&&selDir){ startTiming(); resetIdle(); }
+  else newDelivery();
+}
+
+/* ============================================================
+   IDLE
+============================================================ */
+function resetIdle(){
+  clearIdle();
+  $('idlemsg').style.display = 'none';
+  idleTimer = setTimeout(()=>{
+    if (isInterrupted) return;
+    const el = $('idlemsg');
+    el.textContent = `Kya hua ${G.name}? Khel na!`;
+    el.style.display = 'block';
+    setTimeout(()=>{ el.style.display='none'; },3000);
+    idleTimer = setTimeout(()=>{
+      if (!intUsed&&!isInterrupted){ intUsed=true; playMumCall(); doInterrupt('mum'); }
+    },8000);
+  },9000);
+}
+function clearIdle(){
+  if (idleTimer){ clearTimeout(idleTimer); idleTimer=null; }
+}
+
+/* ============================================================
+   END GAME
+============================================================ */
+function endGame(){
+  clearIdle(); stopTiming(); stopAmbient();
+  G.gullyScore = Math.round(G.runs*1.5 + G.fours*8 + G.sixes*15 + G.balls*0.5);
+  showResult();
+}
+
+/* ============================================================
+   RESULT
+============================================================ */
+function showResult(){
+  showScreen('result');
+  $('r-title').textContent = G.wicketsLeft<=0 ? '💀 BOWLED OUT!' : '🏏 INNINGS OVER!';
+  $('r-score').textContent = G.gullyScore;
+  $('r-runs').textContent = G.runs;
+  $('r-4s').textContent = G.fours;
+  $('r-6s').textContent = G.sixes;
+
+  const nat = NAT_RECORDS[G.maxBalls];
+  $('r-nat').textContent = nat;
+  $('r-you').textContent = G.gullyScore;
+
+  let cmp = '';
+  if (G.gullyScore>=nat)            cmp='🔥 NEW RECORD! Legendary!';
+  else if (G.gullyScore>=nat*0.8)   cmp='So close! Top 10 material!';
+  else if (G.gullyScore>=nat*0.5)   cmp='Not bad yaar! Keep going!';
+  else                               cmp='First over? Keep practicing!';
+  $('r-cmp').textContent = cmp;
+
+  const lb = FAKE_LB.map(r=>({n:r[0],s:r[1],you:false}));
+  lb.push({n:`${G.name} (You)`, s:G.gullyScore, you:true});
+  lb.sort((a,b)=>b.s-a.s);
+
+  const list = $('lblist'); list.innerHTML='';
+  lb.slice(0,6).forEach((e,i)=>{
+    const row = document.createElement('div');
+    row.className = 'lb-row'+(e.you?' you':'');
+    row.innerHTML=`<span class="lb-rk">${i+1}.</span><span class="lb-nm">${e.n}</span><span class="lb-sc">${e.s}</span>`;
+    list.appendChild(row);
+  });
+}
+
+function shareWA(){
+  const txt=`🏏 I scored ${G.runs} runs (Gully Score: ${G.gullyScore}) in Gully Cricket!\n${G.fours} fours · ${G.sixes} sixes\n\nNo stadiums. No nonsense. Just cricket the way it felt. ₹99\n[gullycricket.app]`;
+  if(navigator.share) navigator.share({text:txt});
+  else window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+}
+</script>
+</body>
+</html>
